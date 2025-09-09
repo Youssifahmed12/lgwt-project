@@ -9,21 +9,32 @@ import (
 	server "github.com/Youssifahmed12/lgwt-project/httpserver"
 )
 
+type StubPlayerStore struct {
+	scores map[string]int
+}
+
+func (s StubPlayerStore) GetPlayerScore(name string) int {
+	return s.scores[name]
+}
 func TestGETPlayers(t *testing.T) {
+	s := &server.PlayerServer{Store: StubPlayerStore{scores: map[string]int{
+		"Pepper": 20,
+		"Floyd":  10,
+	}}}
 	t.Run("returns Pepper's score", func(t *testing.T) {
 		req := getNewRequest("Pepper")
 		res := httptest.NewRecorder()
 
-		server.PlayerServer(res, req)
+		s.ServeHTTP(res, req)
 
 		assertResponseBody(t, res.Body.String(), "20")
 
 	})
 	t.Run("returns Floyd's score", func(t *testing.T) {
-		req := getNewRequest("FLoyd")
+		req := getNewRequest("Floyd")
 		res := httptest.NewRecorder()
 
-		server.PlayerServer(res, req)
+		s.ServeHTTP(res, req)
 
 		assertResponseBody(t, res.Body.String(), "10")
 
