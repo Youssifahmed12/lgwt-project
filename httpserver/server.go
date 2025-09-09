@@ -12,14 +12,12 @@ func PlayerServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, getPlayerScore(player))
 }
 
-func getPlayerScore(player string) int {
-	var score int
-
+func getPlayerScore(player string) string {
 	if player == "Floyd" {
-		score = 10
+		return "10"
 	}
 	if player == "Pepper" {
-		score = 10
+		return "20"
 	}
-	return score
+	return ""
 }
