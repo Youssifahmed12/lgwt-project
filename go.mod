@@ -1,3 +1,3 @@
-module github.com/Youssifahmed/lgwt-project
+module github.com/Youssifahmed12/lgwt-project
 
 go 1.24.6
