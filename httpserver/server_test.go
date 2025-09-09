@@ -51,6 +51,17 @@ func TestGETPlayers(t *testing.T) {
 	})
 }
 
+func TestStoreScores(t *testing.T) {
+	s := &server.PlayerServer{Store: StubPlayerStore{}}
+	req, _ := http.NewRequest(http.MethodPost, "/players/Pepper", nil)
+	res := httptest.NewRecorder()
+
+	s.ServeHTTP(res, req)
+
+	assertStatus(t, res.Code, http.StatusAccepted)
+
+}
+
 func getNewRequest(name string) *http.Request {
 	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/players/%s", name), nil)
 	return req
