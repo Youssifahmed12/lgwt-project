@@ -6,18 +6,24 @@ import (
 	server "github.com/Youssifahmed12/lgwt-project/httpserver"
 )
 
-type InMemoryStorage struct {
+// in_memory_player_store.go
+func NewInMemoryPlayerStore() *InMemoryPlayerStore {
+	return &InMemoryPlayerStore{map[string]int{}}
 }
 
-func (I InMemoryStorage) GetPlayerScore(name string) int {
-	return 123
+type InMemoryPlayerStore struct {
+	store map[string]int
 }
 
-func (I InMemoryStorage) RecordWin(name string) {
+func (i *InMemoryPlayerStore) RecordWin(name string) {
+	i.store[name]++
+}
 
+func (i *InMemoryPlayerStore) GetPlayerScore(name string) int {
+	return i.store[name]
 }
 
 func main() {
-	s := &server.PlayerServer{Store: InMemoryStorage{}}
+	s := &server.PlayerServer{Store: NewInMemoryPlayerStore()}
 	http.ListenAndServe(":5000", s)
 }
