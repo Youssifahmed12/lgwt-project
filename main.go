@@ -1,12 +1,11 @@
 package main
 
 import (
+	"log"
 	"net/http"
-
-	server "github.com/Youssifahmed12/lgwt-project/httpserver"
 )
 
 func main() {
-	s := server.NewPlayerServer(&InMemoryPlayerStore{})
-	http.ListenAndServe(":5000", s)
+	server := NewPlayerServer(NewInMemoryPlayerStore())
+	log.Fatal(http.ListenAndServe(":5000", server))
 }
