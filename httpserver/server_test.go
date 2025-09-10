@@ -22,10 +22,11 @@ func (s *StubPlayerStore) RecordWin(name string) {
 	s.winCalls = append(s.winCalls, name)
 }
 func TestGETPlayers(t *testing.T) {
-	s := &server.PlayerServer{Store: &StubPlayerStore{scores: map[string]int{
+	store := &StubPlayerStore{scores: map[string]int{
 		"Pepper": 20,
 		"Floyd":  10,
-	}}}
+	}}
+	s := server.NewPlayerServer(store)
 	t.Run("returns Pepper's score", func(t *testing.T) {
 		req := getNewRequest("Pepper")
 		res := httptest.NewRecorder()
@@ -58,8 +59,7 @@ func TestGETPlayers(t *testing.T) {
 
 func TestStoreScores(t *testing.T) {
 	store := &StubPlayerStore{map[string]int{}, nil}
-	s := &server.PlayerServer{Store: store}
-
+	s := server.NewPlayerServer(store)
 	player := "Youssif"
 	req := newPostWinRequest(player)
 	res := httptest.NewRecorder()
@@ -75,6 +75,18 @@ func TestStoreScores(t *testing.T) {
 	if store.winCalls[0] != player {
 		t.Errorf("got %q , want %q", store.winCalls[0], player)
 	}
+
+}
+
+func TestGetAllPlayers(t *testing.T) {
+	s := server.NewPlayerServer(&StubPlayerStore{})
+	t.Run("League Endpoint", func(t *testing.T) {
+		req, _ := http.NewRequest(http.MethodGet, "/league/", nil)
+		res := httptest.NewRecorder()
+
+		s.ServeHTTP(res, req)
+		assertStatus(t, res.Code, http.StatusOK)
+	})
 
 }
 
